@@ -41,22 +41,21 @@ def get_unix_time(year,month,day):
     return int(str((datetime.datetime(year,month,day,0,0).timestamp()) - unix_timezone).split('.')[0])
 
 
-unixtime = get_unix_time(2020, 11, 10)
+unixtime = get_unix_time(2020, 11, 26)
 data = lastfm_gettracks('sparks_of_fire',unixtime , unixtime+unix_day)
 
-
-track_list = data['weeklytrackchart']['track']
-for track in track_list:
-    print('Track:',track['name'])
-    print('Artist:',track['artist']['#text'])
-    print('Play Count:',track['playcount'])
-    print('Rank', track['@attr']['rank'])
-    print('-'*15)
-    print()
-
-
 #Output raw data to file
+track_list = data['weeklytrackchart']['track']
 f = open("output.txt", "w")
-f.write(json.dumps(data, sort_keys=True, indent=4))
+f.write('')
+f.close()
+f = open("output.txt", "a")
+for track in track_list:
+    f.write('Rank:'+' '+ track['@attr']['rank']+'\n')
+    f.write('Track:'+' '+track['name']+'\n')
+    f.write('Artist:'+' '+track['artist']['#text']+'\n')
+    f.write('Play Count:'+' '+track['playcount']+'\n')
+    f.write('-'*15)
+    f.write('\n\n')
 f.close()
 print("Done")
