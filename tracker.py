@@ -30,7 +30,8 @@ def lastfm_gettracks(user, from_unix, to_unix):
         'method': 'user.getweeklytrackchart',
         'user':user,
         'from':from_unix,
-        'to':to_unix
+        'to':to_unix,
+        'limit':200
     }
     response = lastfm_get(payload)
     return response
@@ -39,11 +40,19 @@ def get_unix_time(year,month,day):
     """Formats a date to unix time"""
     return int(str((datetime.datetime(year,month,day,0,0).timestamp()) - unix_timezone).split('.')[0])
 
-unixtime = get_unix_time(2020, 10, 31)
 
+unixtime = get_unix_time(2020, 11, 10)
 data = lastfm_gettracks('sparks_of_fire',unixtime , unixtime+unix_day)
 
+
 track_list = data['weeklytrackchart']['track']
+for track in track_list:
+    print('Track:',track['name'])
+    print('Artist:',track['artist']['#text'])
+    print('Play Count:',track['playcount'])
+    print('Rank', track['@attr']['rank'])
+    print('-'*15)
+    print()
 
 
 #Output raw data to file
