@@ -32,12 +32,16 @@ def lastfm_gettracks(user, from_unix, to_unix):
     response = lastfm_get(payload)
     return response
 
+def get_unix_time(year,month,day):
+    return int(str((datetime.datetime(year,month,day,0,0).timestamp()) - unix_timezone).split('.')[0])
 
-unixtime = int(str((datetime.datetime(2020,11,1,0,0).timestamp()) - unix_timezone).split('.')[0])
-print(unixtime)
+unixtime = get_unix_time(2020, 10, 31)
 
-r = lastfm_gettracks('sparks_of_fire',unixtime , unixtime+unix_day)
+data = lastfm_gettracks('sparks_of_fire',unixtime , unixtime+unix_day)
+
+track_list = data['weeklytrackchart']['track']
+
 f = open("output.txt", "w")
-f.write(json.dumps(r, sort_keys=True, indent=4))
+f.write(json.dumps(data, sort_keys=True, indent=4))
 f.close()
-print("done")
+print("Done")
