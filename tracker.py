@@ -1,5 +1,7 @@
-import requests, json
+import requests, json, datetime
 
+unix_day = 86400
+unix_timezone = 43200
 info_file = "api_info.txt"
 f = open(info_file)
 application_name = f.readline().split(':')[1].strip()
@@ -31,7 +33,11 @@ def lastfm_gettracks(user, from_unix, to_unix):
     return response
 
 
-r = lastfm_gettracks('sparks_of_fire',1606176000 , 1606262400)
-f = open("output.txt", "a")
+unixtime = int(str((datetime.datetime(2020,11,1,0,0).timestamp()) - unix_timezone).split('.')[0])
+print(unixtime)
+
+r = lastfm_gettracks('sparks_of_fire',unixtime , unixtime+unix_day)
+f = open("output.txt", "w")
 f.write(json.dumps(r, sort_keys=True, indent=4))
 f.close()
+print("done")
