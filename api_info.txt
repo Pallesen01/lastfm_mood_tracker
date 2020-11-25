@@ -1,0 +1,4 @@
+Application name:
+API key:
+Shared secret:
+Registered to:
