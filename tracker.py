@@ -41,7 +41,7 @@ def get_unix_time(year,month,day):
     return int(str((datetime.datetime(year,month,day,0,0).timestamp()) + unix_timezone).split('.')[0])
 
 
-unixtime = get_unix_time(2020, 11, 26)
+unixtime = get_unix_time(2020, 11, 20)
 
 
 shelf = shelve.open('hashtable')
@@ -49,9 +49,9 @@ hashtable = shelf['hashtable']
 
 start = time.time()
 days_count = {}
-for i in range(40):
+for i in range(4):
     date_unix = unixtime+(i*unix_day)
-    data = lastfm_gettracks('sparks_of_fire', date_unix, date_unix+unix_day)
+    data = lastfm_gettracks(registered_user, date_unix, date_unix+unix_day)
     track_list = data['weeklytrackchart']['track']
     count_dict = {}
     for track in track_list:
@@ -69,13 +69,12 @@ f = open("output.txt", "w")
 f.write('')
 f.close()
 f = open("output.txt", "a")
-for track in track_list:
-    f.write('Rank:'+' '+ track['@attr']['rank']+'\n')
-    f.write('Track:'+' '+track['name']+'\n')
-    f.write('Artist:'+' '+track['artist']['#text']+'\n')
-    f.write('Play Count:'+' '+track['playcount']+'\n')
-    f.write('-'*15)
-    f.write('\n\n')
+for unix in days_count:
+    date = time.gmtime(unix)
+    f.write("Date "+str(date.tm_mday)+'/'+str(date.tm_mon)+'/'+str(date.tm_year)+':''\n')
+    for playlist in days_count[unix]:
+        f.write(playlist + ': ' + str(days_count[unix][playlist]) + '\n')
+    f.write('-'*15 + '\n')
 f.close()
 time_taken = time.time() - start
 print("Done in {:.3f} seconds".format(time_taken))
