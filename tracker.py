@@ -41,8 +41,8 @@ def get_unix_time(year,month,day):
     return int(str((datetime.datetime(year,month,day,0,0).timestamp()) - unix_timezone).split('.')[0])
 
 
-unixtime = get_unix_time(2020, 11, 26)
-data = lastfm_gettracks('sparks_of_fire',unixtime , unixtime+unix_day)
+unixtime = get_unix_time(2019, 11, 25)
+data = lastfm_gettracks('sparks_of_fire',unixtime , unixtime+(unix_day*365))
 track_list = data['weeklytrackchart']['track']
 
 shelf = shelve.open('hashtable')
@@ -50,8 +50,9 @@ hashtable = shelf['hashtable']
 count_dict = {}
 for track in track_list:
     key = track['name'].lower().replace(' ','') + '_' + track['artist']['#text'].lower().replace(' ','')
-    value = hashtable.get_value(key)
-    count_dict[value] = count_dict.get(value, 0) + int(track['playcount'])
+    values = hashtable.get_value(key)
+    for value in values:
+        count_dict[value] = count_dict.get(value, 0) + int(track['playcount'])
 
 print(count_dict)
 

@@ -96,15 +96,18 @@ class HashTable:
             If the key isn't in the table then None is returned.
         """
         # ---start student section---
+        values = []
         slot_index = nice_hash(key) % self.number_of_slots
         head = self._data[slot_index]
         while not head is None:
             self.comparisons_used += 1
             if head.key == key:
-                return head.value
-            else:
-                head = head.next_node
-        return None
+                values.append(head.value)            
+            head = head.next_node
+        if len(values) > 0:
+            return values
+        else:
+            return ['Other']
             
         # ===end student section===
 
