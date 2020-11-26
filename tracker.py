@@ -47,8 +47,9 @@ unixtime = get_unix_time(2020, 11, 26)
 shelf = shelve.open('hashtable')
 hashtable = shelf['hashtable']
 
+start = time.time()
 days_count = {}
-for i in range(1):
+for i in range(40):
     date_unix = unixtime+(i*unix_day)
     data = lastfm_gettracks('sparks_of_fire', date_unix, date_unix+unix_day)
     track_list = data['weeklytrackchart']['track']
@@ -76,4 +77,5 @@ for track in track_list:
     f.write('-'*15)
     f.write('\n\n')
 f.close()
-print("Done")
+time_taken = time.time() - start
+print("Done in {:.3f} seconds".format(time_taken))
