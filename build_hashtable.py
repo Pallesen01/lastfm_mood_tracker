@@ -52,7 +52,9 @@ f.close()
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-playlist_urls = ["spotify:playlist:3O9BvCMJrtvpXzCTVOGCF8", "spotify:playlist:5I6ol3TfmmaeCHodOZmsZE", "spotify:playlist:47FnREUkx8T63ecqKroG2n"]
+playlist_file = "playlists.txt"
+f = open(playlist_file)
+playlist_urls = f.read().split('\n')
 key_value_pairs = []
 for url in playlist_urls:
     tracks, playlist_name = getTracks(url, sp)
