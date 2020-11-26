@@ -44,7 +44,13 @@ def get_unix_time(year,month,day):
 unixtime = get_unix_time(2020, 11, 26)
 data = lastfm_gettracks('sparks_of_fire',unixtime , unixtime+unix_day)
 
-#Output raw data to file
+
+
+
+
+
+
+#Output formatted data to file
 track_list = data['weeklytrackchart']['track']
 f = open("output.txt", "w")
 f.write('')
