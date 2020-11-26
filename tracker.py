@@ -47,8 +47,13 @@ track_list = data['weeklytrackchart']['track']
 
 shelf = shelve.open('hashtable')
 hashtable = shelf['hashtable']
-print(hashtable)
+count_dict = {}
+for track in track_list:
+    key = track['name'].lower().replace(' ','') + '_' + track['artist']['#text'].lower().replace(' ','')
+    value = hashtable.get_value(key)
+    count_dict[value] = count_dict.get(value, 0) + int(track['playcount'])
 
+print(count_dict)
 
 
 #Output formatted data to file

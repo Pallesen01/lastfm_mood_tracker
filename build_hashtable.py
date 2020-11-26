@@ -60,17 +60,17 @@ except:
 
 shelveFile.close()
 
-tracks, playlist_name = getTracks("spotify:playlist:47FnREUkx8T63ecqKroG2n", sp)
+tracks, playlist_name = getTracks("spotify:playlist:3O9BvCMJrtvpXzCTVOGCF8", sp)
 
 shelf = shelve.open("hashtable", "n")
 tablesize = int(len(tracks)/0.5)
 hashtable = HashTable(tablesize)
 for track in tracks:
     key = track.name.lower().replace(' ','') + '_' + track.artists[0].lower().replace(' ','')
-    #print('Key:',key)
     value = playlist_name
-    #print('Value:',value)
     hashtable.store_pair(key, value)
 shelf['hashtable'] = hashtable
 shelf.close()
+print(hashtable)
+print('Done')
 

@@ -1,3 +1,20 @@
+def _c_mul(value_a, value_b):
+    '''Substitute for c multiply function'''
+    return ((int(value_a) * int(value_b)) & 0xFFFFFFFF)
+
+def nice_hash(input_string):
+    '''Takes a string name and returns a hash for the string. This hash value
+    will be os independent, unlike the default Python hash function.'''
+    if input_string is None:
+        return 0  # empty
+    value = ord(input_string[0]) << 7
+    for char in input_string:
+        value = _c_mul(1000003, value) ^ ord(char)
+    value = value ^ len(input_string)
+    if value == -1:
+        value = -2
+    return value
+
 class Node:
 
     def __init__(self, key, value):
@@ -63,7 +80,7 @@ class HashTable:
         You should make a new node using the given key and value and insert it
         at the start of the linked list in the indexed slot in self._data
         """
-        slot_index = hash(key) % self.number_of_slots
+        slot_index = nice_hash(key) % self.number_of_slots
         head = self._data[slot_index]
         new_node = Node(key, value)
         if head is None:
@@ -79,7 +96,7 @@ class HashTable:
             If the key isn't in the table then None is returned.
         """
         # ---start student section---
-        slot_index = hash(key) % self.number_of_slots
+        slot_index = nice_hash(key) % self.number_of_slots
         head = self._data[slot_index]
         while not head is None:
             self.comparisons_used += 1
