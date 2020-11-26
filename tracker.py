@@ -1,8 +1,8 @@
-import requests, json, datetime, shelve
+import requests, json, datetime, shelve, time
 
 #Setup Variables
 unix_day = 86400
-unix_timezone = 43200
+unix_timezone = 46800
 info_file = "lastfm_api.txt"
 f = open(info_file)
 application_name = f.readline().split(':')[1].strip()
@@ -38,23 +38,29 @@ def lastfm_gettracks(user, from_unix, to_unix):
 
 def get_unix_time(year,month,day):
     """Formats a date to unix time"""
-    return int(str((datetime.datetime(year,month,day,0,0).timestamp()) - unix_timezone).split('.')[0])
+    return int(str((datetime.datetime(year,month,day,0,0).timestamp()) + unix_timezone).split('.')[0])
 
 
-unixtime = get_unix_time(2019, 11, 25)
-data = lastfm_gettracks('sparks_of_fire',unixtime , unixtime+(unix_day*365))
-track_list = data['weeklytrackchart']['track']
+unixtime = get_unix_time(2020, 11, 26)
+
 
 shelf = shelve.open('hashtable')
 hashtable = shelf['hashtable']
-count_dict = {}
-for track in track_list:
-    key = track['name'].lower().replace(' ','') + '_' + track['artist']['#text'].lower().replace(' ','')
-    values = hashtable.get_value(key)
-    for value in values:
-        count_dict[value] = count_dict.get(value, 0) + int(track['playcount'])
 
-print(count_dict)
+days_count = {}
+for i in range(1):
+    date_unix = unixtime+(i*unix_day)
+    data = lastfm_gettracks('sparks_of_fire', date_unix, date_unix+unix_day)
+    track_list = data['weeklytrackchart']['track']
+    count_dict = {}
+    for track in track_list:
+        key = track['name'].lower().replace(' ','') + '_' + track['artist']['#text'].lower().replace(' ','')
+        values = hashtable.get_value(key)
+        for value in values:
+            count_dict[value] = count_dict.get(value, 0) + int(track['playcount'])
+    days_count[date_unix] = count_dict
+
+print(days_count)
 
 
 #Output formatted data to file
