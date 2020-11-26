@@ -42,7 +42,7 @@ def get_unix_time(year,month,day):
 
 
 startdate = get_unix_time(2020, 1, 1)
-print('Starting...')
+print('Getting Data...')
 
 shelf = shelve.open('hashtable')
 hashtable = shelf['hashtable']
