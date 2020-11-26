@@ -52,6 +52,8 @@ f.close()
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
+print("Building Hashtable...")
+
 playlist_file = "playlists.txt"
 f = open(playlist_file)
 playlist_urls = [line.split('#')[0].strip() for line in f.read().split('\n')]
