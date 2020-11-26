@@ -54,7 +54,7 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 playlist_file = "playlists.txt"
 f = open(playlist_file)
-playlist_urls = f.read().split('\n')
+playlist_urls = [line.split('#')[0].strip() for line in f.read().split('\n')]
 key_value_pairs = []
 for url in playlist_urls:
     tracks, playlist_name = getTracks(url, sp)
