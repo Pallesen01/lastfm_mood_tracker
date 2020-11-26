@@ -42,33 +42,32 @@ class Song():
         self.art_urls = [art['url'] for art in track['album']['images']]
         self.uri = track['uri']
 
-shelveFile = shelve.open('spotify_data')
+info_file = "spotify_api.txt"
+f = open(info_file)
+client_id = f.readline().split(':')[1].strip()
+client_secret = f.readline().split(':')[1].strip()
+f.close()
 
-try:
-    # spotify verification
-    client_credentials_manager = SpotifyClientCredentials(client_id=shelveFile['SPOTIPY_CLIENT_ID'],
-                                                        client_secret=shelveFile['SPOTIPY_CLIENT_SECRET'])
+# spotify verification
+client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-except:
-    shelveFile['SPOTIPY_CLIENT_ID'] = input("Enter Client ID: ")
-    shelveFile['SPOTIPY_CLIENT_SECRET'] = input("Enter Client Secret: ")
-    client_credentials_manager = SpotifyClientCredentials(client_id=shelveFile['SPOTIPY_CLIENT_ID'],
-                                                        client_secret=shelveFile['SPOTIPY_CLIENT_SECRET'])
-
-    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-
-shelveFile.close()
-
-tracks, playlist_name = getTracks("spotify:playlist:3O9BvCMJrtvpXzCTVOGCF8", sp)
+playlist_urls = ["spotify:playlist:3O9BvCMJrtvpXzCTVOGCF8", "spotify:playlist:5I6ol3TfmmaeCHodOZmsZE", "spotify:playlist:47FnREUkx8T63ecqKroG2n"]
+key_value_pairs = []
+for url in playlist_urls:
+    tracks, playlist_name = getTracks(url, sp)
+    for track in tracks:
+        key = track.name.lower().replace(' ','') + '_' + track.artists[0].lower().replace(' ','')
+        value = playlist_name
+        key_value_pairs.append((key, value))
 
 shelf = shelve.open("hashtable", "n")
-tablesize = int(len(tracks)/0.5)
+tablesize = int(len(key_value_pairs)/0.5)
 hashtable = HashTable(tablesize)
-for track in tracks:
-    key = track.name.lower().replace(' ','') + '_' + track.artists[0].lower().replace(' ','')
-    value = playlist_name
-    hashtable.store_pair(key, value)
+
+for pair in key_value_pairs:
+    hashtable.store_pair(pair[0],pair[1])
+
 shelf['hashtable'] = hashtable
 shelf.close()
 print(hashtable)
