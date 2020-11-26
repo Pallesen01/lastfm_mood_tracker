@@ -3,7 +3,7 @@ import requests, json, datetime, shelve
 #Setup Variables
 unix_day = 86400
 unix_timezone = 43200
-info_file = "api_info.txt"
+info_file = "lastfm_api.txt"
 f = open(info_file)
 application_name = f.readline().split(':')[1].strip()
 api_key = f.readline().split(':')[1].strip()
