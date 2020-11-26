@@ -41,16 +41,17 @@ def get_unix_time(year,month,day):
     return int(str((datetime.datetime(year,month,day,0,0).timestamp()) + unix_timezone).split('.')[0])
 
 
-unixtime = get_unix_time(2020, 11, 20)
-
+startdate = get_unix_time(2020, 1, 1)
+print('Starting...')
 
 shelf = shelve.open('hashtable')
 hashtable = shelf['hashtable']
 
 start = time.time()
 days_count = {}
-for i in range(4):
-    date_unix = unixtime+(i*unix_day)
+i = 0
+while startdate+(i*unix_day) < time.time():    
+    date_unix = startdate+(i*unix_day)
     data = lastfm_gettracks(registered_user, date_unix, date_unix+unix_day)
     track_list = data['weeklytrackchart']['track']
     count_dict = {}
@@ -60,10 +61,9 @@ for i in range(4):
         for value in values:
             count_dict[value] = count_dict.get(value, 0) + int(track['playcount'])
     days_count[date_unix] = count_dict
+    i+=1
 
-print(days_count)
-
-
+threshold = 10
 #Output formatted data to file
 f = open("output.txt", "w")
 f.write('')
@@ -73,7 +73,11 @@ for unix in days_count:
     date = time.gmtime(unix)
     f.write("Date "+str(date.tm_mday)+'/'+str(date.tm_mon)+'/'+str(date.tm_year)+':''\n')
     for playlist in days_count[unix]:
-        f.write(playlist + ': ' + str(days_count[unix][playlist]) + '\n')
+        f.write(playlist + ': ' + str(days_count[unix][playlist]))
+        if playlist != 'Other' and days_count[unix][playlist] > threshold:
+            f.write('***\n')
+        else:
+            f.write('\n')
     f.write('-'*15 + '\n')
 f.close()
 time_taken = time.time() - start
